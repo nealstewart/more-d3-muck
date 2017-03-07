@@ -18,12 +18,13 @@ const linear = scale.scaleLinear;
 
 const chartWidth = 500;
 const chartHeight = 500;
-const svgWidth = 600;
-const svgHeight = 600;
+const svgWidth = 2000;
+const svgHeight = 2000;
 
 class FirstLineChart extends React.PureComponent {
     constructor(props) {
         super(props);
+        const {x, y, height, width} = this.props;
 
         const data = this.props.data;
         const ySortedData = data.slice(0).sort((a, b) => a.y - b.y);
@@ -35,15 +36,15 @@ class FirstLineChart extends React.PureComponent {
 
         this.yScale = linear()
             .domain([minY, maxY])
-            .range([chartHeight, 0]);
+            .range([y + height, y]);
 
         this.xScale = linear()
             .domain([minX, maxX])
-            .range([0, chartWidth]);
+            .range([x, x + width]);
 
         this.area = area()
             .x(d => this.xScale(d.x))
-            .y0(chartHeight)
+            .y0(y + height)
             .y1(d => this.yScale(d.y));
     }
 
@@ -51,18 +52,21 @@ class FirstLineChart extends React.PureComponent {
         const data = this.props.data;
 
         return (
-            <svg width={svgWidth} 
-                 height={svgHeight}>
+            <g>
                 <Ticks yScale={this.yScale}
                        xScale={this.xScale} />
                 <path className="area"
                       fill="transparent"
                       stroke="black" 
                       d={this.area(data)} />
-                <Tooltip xScale={this.xScale}
+                <Tooltip width={this.props.width}
+                         height={this.props.height}
+                         x={this.props.x}
+                         y={this.props.y}
+                         xScale={this.xScale}
                          yScale={this.yScale}
                          data={data}  />
-            </svg>
+            </g>
         );
     }
 }
@@ -116,9 +120,9 @@ class Tooltip extends React.PureComponent {
                             </text>
                             <line stroke="black"
                                 x1={scaledClosestPoint.x}
-                                y1={0} 
+                                y1={this.props.y} 
                                 x2={scaledClosestPoint.x} 
-                                y2={chartHeight} />
+                                y2={this.props.y + this.props.height} />
                             <circle cx={scaledClosestPoint.x}
                                     cy={scaledClosestPoint.y} r={10} />
                         </g>
@@ -126,10 +130,10 @@ class Tooltip extends React.PureComponent {
                 <rect fill="transparent" stroke="none"
                     onMouseOut={onMouseOut} 
                     onMouseMove={onMouseMove}
-                    width={chartWidth}
-                    height={chartHeight}
-                    x={0}
-                    y={0} />
+                    width={this.props.width}
+                    height={this.props.height}
+                    x={this.props.x}
+                    y={this.props.y} />
             </g>
         );
     }
@@ -185,25 +189,22 @@ const searchForClosest = (list, val) => {
     return binSearch(list, val, 0, list.length / 2 | 0, list.length - 1);
 };
 
+class Charts extends React.PureComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <svg width={svgWidth} height={svgHeight}>
+                <FirstLineChart x={0} y={10} width={chartWidth} height={chartHeight} data={mappedMyData} />
+                <FirstLineChart x={0} y={10 + chartHeight} width={chartWidth} height={chartHeight} data={mappedMyData} />
+            </svg>
+        ); 
+    }
+}
+
 ReactDOM.render(
-    <FirstLineChart data={mappedMyData} />,
+    <Charts />,
     document.getElementById("root")
 )
-
-/*
-var svg = d3.select("svg");
-
-
-
-debugger;
-
-var circle = svg.selectAll("circle")
-    .data(data);
-
-circle.enter().append("circle")
-    .attr("cy", d => d.y)
-    .attr("cx", d => d.x)
-    .attr("r", d => d.r);
-
-circle.exit().remove();
-*/
