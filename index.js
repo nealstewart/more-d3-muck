@@ -5,7 +5,7 @@ import first from "lodash.first";
 import last from "lodash.last";
 import times from "lodash.times";
 import throttle from "lodash.throttle";
-import { line } from "d3-shape";
+import {area} from "d3-shape";
 import * as scale from "d3-scale";
 import myData from "./test_data";
 import simplify from "simplify-js";
@@ -41,9 +41,10 @@ class FirstLineChart extends React.PureComponent {
             .domain([minX, maxX])
             .range([0, chartWidth]);
 
-        this.line = line()
+        this.area = area()
             .x(d => this.xScale(d.x))
-            .y(d => this.yScale(d.y));
+            .y0(chartHeight)
+            .y1(d => this.yScale(d.y));
     }
 
     render() {
@@ -54,9 +55,10 @@ class FirstLineChart extends React.PureComponent {
                  height={svgHeight}>
                 <Ticks yScale={this.yScale}
                        xScale={this.xScale} />
-                <path fill="transparent"
+                <path className="area"
+                      fill="transparent"
                       stroke="black" 
-                      d={this.line(data)} />
+                      d={this.area(data)} />
                 <Tooltip xScale={this.xScale}
                          yScale={this.yScale}
                          data={data}  />
@@ -112,13 +114,13 @@ class Tooltip extends React.PureComponent {
                                 y={scaledClosestPoint.y + 10}>
                                 {closestPoint.y}
                             </text>
-                            <circle cx={scaledClosestPoint.x}
-                                    cy={scaledClosestPoint.y} r={10} />
                             <line stroke="black"
                                 x1={scaledClosestPoint.x}
                                 y1={0} 
                                 x2={scaledClosestPoint.x} 
                                 y2={chartHeight} />
+                            <circle cx={scaledClosestPoint.x}
+                                    cy={scaledClosestPoint.y} r={10} />
                         </g>
                     }
                 <rect fill="transparent" stroke="none"
