@@ -160,10 +160,12 @@ const binSearch = (list, val, begin, middle, end) => {
     const diff =  - val;
     const middleVal = list[middle].x;
     if (begin == middle) {
-        const indices = [begin, middle, end];
-        const values = [Math.abs(val - list[begin].x), Math.abs(val - list[middle].x), Math.abs(val - list[end].x)];
-        const index = values.indexOf(Math.min.apply(Math, values));
-        return indices[index];
+        const middleDist = Math.abs(val - list[middle].x);
+        const endDist = Math.abs(val - list[end].x)
+        if (middleDist < endDist) {
+            return middle;
+        }
+        return end;
     }
 
     if (middleVal == val) {
