@@ -78,12 +78,12 @@ class Tooltip extends React.PureComponent {
 
     render() {
         const {data} = this.props;
-        const onMouseMove = throttle(evt => {
+        const onMouseMove = evt => {
             this.setState({
                 mouseMove: true,
                 x: evt.clientX
             });
-        }, 1000 / 20);
+        };
         const onMouseOut = evt => {
             this.setState({
                 mouseMove: false,
