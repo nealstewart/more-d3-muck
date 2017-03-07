@@ -21,11 +21,11 @@ const chartHeight = 500;
 const svgWidth = 600;
 const svgHeight = 600;
 
-class MyCircles extends React.PureComponent {
+class FirstLineChart extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        const data = this.props.greatData;
+        const data = this.props.data;
         const ySortedData = data.slice(0).sort((a, b) => a.y - b.y);
 
         const minY = first(ySortedData).y;
@@ -47,7 +47,7 @@ class MyCircles extends React.PureComponent {
     }
 
     render() {
-        const data = this.props.greatData;
+        const data = this.props.data;
 
         return (
             <svg width={svgWidth} 
@@ -182,7 +182,7 @@ const searchForClosest = (list, val) => {
 };
 
 ReactDOM.render(
-    <MyCircles greatData={mappedMyData} />,
+    <FirstLineChart data={mappedMyData} />,
     document.getElementById("root")
 )
 
