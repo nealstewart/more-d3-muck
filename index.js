@@ -35,7 +35,7 @@ class MyCircles extends React.PureComponent {
 
         this.yScale = linear()
             .domain([minY, maxY])
-            .range([0, chartHeight]);
+            .range([chartHeight, 0]);
 
         this.xScale = linear()
             .domain([minX, maxX])
@@ -43,7 +43,7 @@ class MyCircles extends React.PureComponent {
 
         this.line = line()
             .x(d => this.xScale(d.x))
-            .y(d => chartHeight - this.yScale(d.y));
+            .y(d => this.yScale(d.y));
     }
 
     render() {
@@ -96,7 +96,7 @@ class Tooltip extends React.PureComponent {
             closestPoint = data[searchForClosest(data, this.xScale.invert(this.state.x))];
             scaledClosestPoint = {
                 x: this.xScale(closestPoint.x),
-                y: chartHeight - this.yScale(closestPoint.y)
+                y: this.yScale(closestPoint.y)
             }
         }
         
@@ -144,12 +144,12 @@ function Ticks({yScale}) {
                       stroke="black"
                       x1={0} 
                       x2={chartWidth}
-                      y1={chartHeight - yScale(t)} 
-                      y2={chartHeight - yScale(t)} />)}
+                      y1={yScale(t)} 
+                      y2={yScale(t)} />)}
             {map(ticks, (t, i) => 
                 <text key={"text-" + i} 
                       x={chartWidth + 10} 
-                      y={chartHeight - yScale(t)}>
+                      y={yScale(t)}>
                     {tickFormat(t)}
                 </text>)}
         </g>
